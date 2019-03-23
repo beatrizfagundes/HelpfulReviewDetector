@@ -1,0 +1,6 @@
+# Ignore tempfiles
+.DS_Store
+
+# Ignore third-party tools
+third-party
+
