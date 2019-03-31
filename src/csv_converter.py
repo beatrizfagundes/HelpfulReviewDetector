@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# Author: Beatriz Fagundes
+#
 # Converts a dataset to a CSV file
 #
 # usage: python csv_converter.py [options] [file or directory]
