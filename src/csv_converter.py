@@ -20,6 +20,28 @@ import gzip
 import logging
 
 
+# This method is not used here internally but it is used externally
+def read_csv(dataset):
+    corpus = []
+    keys = []
+    num_line = 0
+    with open(dataset, newline='') as csvfile:
+        logging.info('Reading CSV file...')
+        data = csv.reader(csvfile, delimiter=',')
+        for row in data:
+            if num_line == 0:
+                # header
+                keys = row
+                num_line += 1
+            else:
+                instance = {}
+                for i in range(len(row)):
+                    instance[keys[i]] = row[i]
+                corpus.append(instance)
+    logging.info('Number of documents: %s' % str(len(corpus)))
+    return corpus
+
+
 def save_csv(corpus, outfile):
     logging.info('Number of documents: %s' % str(len(corpus)))
     logging.info('Creating CSV file...')

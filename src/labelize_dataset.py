@@ -3,34 +3,16 @@
 #
 # Transform the helpful votes (in numbers) to class labels "helpful" and
 # "not helpful" based on the following approach:
-#   if helpfulVotes / totalVotes >= 0.7 then class = "helpful"
-#   else if helpfulVotes / totalVotes <= 0.3 then class = "not helpful"
+#   if (helpfulVotes / totalVotes) >= 0.7 then class = "helpful"
+#   else if (helpfulVotes / totalVotes) <= 0.3 then class = "not_helpful"
 #   else discard the instance (for now)
 #
 
 import sys
 import csv
 import logging
-from csv_converter import save_csv
+from csv_converter import save_csv, read_csv
 import os
-
-def read_csv(dataset):
-    corpus = []
-    keys = []
-    num_line = 0
-    with open(dataset, newline='') as csvfile:
-        data = csv.reader(csvfile, delimiter=',')
-        for row in data:
-            if num_line == 0:
-                # header
-                keys = row
-                num_line += 1
-            else:
-                instance = {}
-                for i in range(len(row)):
-                    instance[keys[i]] = row[i]
-                corpus.append(instance)
-    return corpus
 
 
 def labelize(corpus):
