@@ -29,11 +29,14 @@ def sentiment_features(review_sents):
             num_pos += 1
         else:
             num_neg += 1
-    emotional_balance = float(abs(num_pos - num_neg)) / float(total_sents)
-    return (float(num_pos)/float(total_sents),
-            float(num_neg)/float(total_sents),
-            float(num_neutral)/float(total_sents),
-            emotional_balance)
+    if total_sents == 0:
+        return (0, 0, 0, 0)
+    else:
+        emotional_balance = float(abs(num_pos - num_neg)) / float(total_sents)
+        return (float(num_pos)/float(total_sents),
+                float(num_neg)/float(total_sents),
+                float(num_neutral)/float(total_sents),
+                emotional_balance)
 
 
 def argument_features(review):
@@ -46,7 +49,10 @@ def argument_features(review):
     # running MARGOT
     run_margot_cmd = './run_margot.sh'
     output_path = '.' # current directory
-    input_file = '"' + review + '"'
+    if review[0] == '"' and review[len(review)-1] == '"':
+        input_file = review
+    else:
+        input_file = '"' + review + '"'
     os.system(run_margot_cmd + ' ' + input_file + ' ' + output_path)
     # handles the MARGOT output file
     f = open('OUTPUT.json', 'r')
