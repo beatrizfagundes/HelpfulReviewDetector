@@ -49,11 +49,10 @@ def argument_features(review):
     # running MARGOT
     run_margot_cmd = './run_margot.sh'
     output_path = '.' # current directory
-    if review[0] == '"' and review[len(review)-1] == '"':
-        input_file = review
-    else:
-        input_file = '"' + review + '"'
-    os.system(run_margot_cmd + ' ' + input_file + ' ' + output_path)
+    review = review.replace('"', '')
+    input_file = '"' + review + '"'
+    full_cmd = run_margot_cmd + ' ' + input_file + ' ' + output_path
+    os.system(full_cmd)
     # handles the MARGOT output file
     f = open('OUTPUT.json', 'r')
     try:
@@ -71,10 +70,13 @@ def argument_features(review):
     finally:
         f.close()
     total_sents = num_evidences + num_claims + num_claim_evidence + num_non_args
-    return (float(num_evidences)/float(total_sents),
-            float(num_claims)/float(total_sents),
-            float(num_claim_evidence)/float(total_sents),
-            float(num_non_args)/float(total_sents))
+    if total_sents == 0:
+        return (0, 0, 0, 0)
+    else:
+        return (float(num_evidences)/float(total_sents),
+                float(num_claims)/float(total_sents),
+                float(num_claim_evidence)/float(total_sents),
+                float(num_non_args)/float(total_sents))
 
 
 def tokenize(review):
@@ -110,35 +112,46 @@ def tokenize(review):
 
 def extract_features(corpus):
     reviews_preprocessed = []
-    features_names = ['Evidences%', 'Claims%', 'ClaimEvidence%', 'NonArgs%', 'PosSents%', 'NegSents%', 'NeutralSents%', 'EmotionBalance', 'NewsDegreeIDF']
+#    features_names = ['Evidences%', 'Claims%', 'ClaimEvidence%', 'NonArgs%', 'PosSents%', 'NegSents%', 'NeutralSents%', 'EmotionBalance', 'NewsDegreeIDF']
+    features_names = ['Evidences%', 'Claims%', 'ClaimEvidence%', 'NonArgs%']
     unigrams = set()
     tokens_per_review = []
     reviews = []
     N = len(corpus)
+    count = 0
     for review_info in corpus:
+        count += 1
+        print(str(count))
         review = review_info['reviewText']
-        logging.info('Extracting linguistic features...')
-        tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
-        unigrams.update(tokens)
-        tokens_per_review.append(tokens)
+#        logging.info('Extracting linguistic features...')
+#        tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
+#        unigrams.update(tokens)
+#        tokens_per_review.append(tokens)
         logging.info('Extracting argumentative features...')
         num_evidences, num_claims, num_claim_evidence, num_non_args = argument_features(review)
-        logging.info('Extracting sentiment features...')
-        num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance = sentiment_features(sentences)
-        review_features = [num_evidences, num_claims, num_claim_evidence, num_non_args, num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance]
+#        logging.info('Extracting sentiment features...')
+#        num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance = sentiment_features(sentences)
+#        review_features = [num_evidences, num_claims, num_claim_evidence, num_non_args, num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance]
+        review_features = [num_evidences, num_claims, num_claim_evidence, num_non_args]
         reviews_preprocessed.append(review_features)
     # compute IDF = log(number of documents / document frequency)
-    logging.info('Extracting average IDF feature...')
-    unigram_idf = {}
-    for u in unigrams:
-        unigram_idf[u] = math.log(float(N)/float(vocab_df[u]))
-    # add avarage idf for a review as a feature
+#    logging.info('Extracting average IDF feature...')
+#    unigram_idf = {}
+#    for u in unigrams:
+#        if vocab_df[u] == 0:
+#            unigram_idf[u] = 0
+#        else:
+#            unigram_idf[u] = math.log(float(N)/float(vocab_df[u]))
+#    # add avarage idf for a review as a feature
     for idx in range(N):
-        total_idf = 0
-        for t in tokens_per_review[idx]:
-            total_idf += unigram_idf[t]
-        avg_idf = float(total_idf)/len(tokens_per_review[idx])
-        reviews_preprocessed[idx].append(avg_idf)
+#        total_idf = 0
+#        for t in tokens_per_review[idx]:
+#            total_idf += unigram_idf[t]
+#        if len(tokens_per_review[idx]) == 0:
+#            avg_idf = 0
+#        else:
+#            avg_idf = float(total_idf)/len(tokens_per_review[idx])
+#        reviews_preprocessed[idx].append(avg_idf)
         # create a hash with all the necessary info of the review
         instance_to_save = {
                 'reviewClass': corpus[idx]['reviewClass']
@@ -149,6 +162,7 @@ def extract_features(corpus):
 #    import ipdb; ipdb.set_trace()
     logging.info('Number of features extracted: %s' % str(len(features_names)))
     return reviews
+
 
 def main():
     # init log file
@@ -166,12 +180,12 @@ usage:')
 
     corpus = read_csv(dataset)
     previous_dir = os.getcwd()
-    full_margot_path = '../third-party/predictor'
+    full_margot_path = '../third-party/margot-modified/predictor'
     os.chdir(full_margot_path)
     preprocessed = extract_features(corpus)
     logging.info('Storing the preprocessed dataset at: %s' % previous_dir)
     os.chdir(previous_dir)
-    save_csv(preprocessed, dataset.replace('_label.csv', '_features.csv'))
+    save_csv(preprocessed, dataset.replace('_label2.csv', '_features2.csv'))
 
 
 vocab_df = {}
