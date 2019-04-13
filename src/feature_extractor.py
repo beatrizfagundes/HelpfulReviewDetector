@@ -12,6 +12,7 @@ from csv_converter import save_csv, read_csv
 import os
 import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from joblib import Parallel, delayed
 
 
 def sentiment_features(review_sents):
@@ -113,7 +114,7 @@ def tokenize(review):
 def extract_features(corpus):
     reviews_preprocessed = []
 #    features_names = ['Evidences%', 'Claims%', 'ClaimEvidence%', 'NonArgs%', 'PosSents%', 'NegSents%', 'NeutralSents%', 'EmotionBalance', 'NewsDegreeIDF']
-    features_names = ['Evidences%', 'Claims%', 'ClaimEvidence%', 'NonArgs%']
+    features_names = []
     unigrams = set()
     tokens_per_review = []
     reviews = []
@@ -123,27 +124,28 @@ def extract_features(corpus):
         count += 1
         print(str(count))
         review = review_info['reviewText']
-#        logging.info('Extracting linguistic features...')
-#        tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
-#        unigrams.update(tokens)
-#        tokens_per_review.append(tokens)
-        logging.info('Extracting argumentative features...')
-        num_evidences, num_claims, num_claim_evidence, num_non_args = argument_features(review)
+        logging.info('Extracting linguistic features...')
+        tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
+        unigrams.update(tokens)
+        tokens_per_review.append(tokens)
+#        logging.info('Extracting argumentative features...')
+#        num_evidences, num_claims, num_claim_evidence, num_non_args = argument_features(review)
 #        logging.info('Extracting sentiment features...')
 #        num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance = sentiment_features(sentences)
 #        review_features = [num_evidences, num_claims, num_claim_evidence, num_non_args, num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance]
-        review_features = [num_evidences, num_claims, num_claim_evidence, num_non_args]
-        reviews_preprocessed.append(review_features)
     # compute IDF = log(number of documents / document frequency)
-#    logging.info('Extracting average IDF feature...')
-#    unigram_idf = {}
-#    for u in unigrams:
-#        if vocab_df[u] == 0:
-#            unigram_idf[u] = 0
-#        else:
-#            unigram_idf[u] = math.log(float(N)/float(vocab_df[u]))
+    logging.info('Extracting average IDF feature...')
+    unigram_idf = {}
+    for u in unigrams:
+        if vocab_df[u] == 0:
+            unigram_idf[u] = 0
+        else:
+            unigram_idf[u] = math.log(float(N)/float(vocab_df[u]))
+
+    features_names = list(unigrams)
+    reviews = Parallel(n_jobs=2)(delayed(tfidf)(i, corpus[i], features_names, tokens_per_review[i], unigram_idf) for i in range(N))
 #    # add avarage idf for a review as a feature
-    for idx in range(N):
+#    for idx in range(N):
 #        total_idf = 0
 #        for t in tokens_per_review[idx]:
 #            total_idf += unigram_idf[t]
@@ -152,16 +154,28 @@ def extract_features(corpus):
 #        else:
 #            avg_idf = float(total_idf)/len(tokens_per_review[idx])
 #        reviews_preprocessed[idx].append(avg_idf)
-        # create a hash with all the necessary info of the review
-        instance_to_save = {
-                'reviewClass': corpus[idx]['reviewClass']
-        }
-        for f in range(len(features_names)):
-            instance_to_save[features_names[f]] = reviews_preprocessed[idx][f]
-        reviews.append(instance_to_save)
+#
+#        # create a hash with all the necessary info of the review
+#        instance_to_save = {
+#                'reviewClass': corpus[idx]['reviewClass']
+#        }
+#        for f in range(len(features_names)):
+#            instance_to_save[features_names[f]] = reviews_preprocessed[idx][f]
+#        reviews.append(instance_to_save)
 #    import ipdb; ipdb.set_trace()
     logging.info('Number of features extracted: %s' % str(len(features_names)))
     return reviews
+
+
+def tfidf(idx, review, features, review_tokens, idf):
+    instance_to_save = {
+        'reviewClass': review['reviewClass']
+    }
+    for f in range(len(features)):
+        token = features[f]
+        instance_to_save[token] = float(review_tokens.count(token)) / idf[token]
+
+    return instance_to_save
 
 
 def main():
@@ -181,11 +195,11 @@ usage:')
     corpus = read_csv(dataset)
     previous_dir = os.getcwd()
     full_margot_path = '../third-party/margot-modified/predictor'
-    os.chdir(full_margot_path)
+#    os.chdir(full_margot_path)
     preprocessed = extract_features(corpus)
     logging.info('Storing the preprocessed dataset at: %s' % previous_dir)
     os.chdir(previous_dir)
-    save_csv(preprocessed, dataset.replace('_label2.csv', '_features2.csv'))
+    save_csv(preprocessed, dataset.replace('label', 'tfidf'))
 
 
 vocab_df = {}

@@ -1,18 +1,20 @@
 #!/bin/bash
 
 echo Installing third-party tools...
-mkdir lib
+mkdir lib && cd lib
 echo "######### Margot - Argument Mining tool"
-wget https://mega.nz/#!R6pyCaxZ!AOxuX24h-dWhOMZGTGv3dj-7xAPG7g2UC9jK3LY3g6c
+megadl 'https://mega.nz/#!R6pyCaxZ!AOxuX24h-dWhOMZGTGv3dj-7xAPG7g2UC9jK3LY3g6c'
 unzip svm-light-TK-1.5.zip
+rm -rf __MACOSX/
 cd SVM-Light-1.5-to-be-released
 make
 cd ..
-mkdir margot && cd margot
 git clone https://github.com/beatrizfagundes/margot-modified.git
-cd margot-modified
-cp ../SVM-Light-1.5-to-be-released/svm_classify bin
+cd margot-modified/predictor
+mkdir bin
+mkdir lib
 ./install_dependencies.sh
+cp ../../SVM-Light-1.5-to-be-released/svm_classify bin/.
 ./compile.sh
 
 echo "######### SPECITELLER - Specific sentences detector"

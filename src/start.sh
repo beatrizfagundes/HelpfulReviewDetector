@@ -5,9 +5,9 @@ echo Installing dependencies...
 sudo apt update
 sudo apt install git
 sudo apt install gcc
+sudo apt install megatools
 sudo apt install python3
 sudo apt install python3-pip
-sudo apt install default-jre
 sudo apt install default-jdk
 sudo update-alternatives --config java
 
@@ -36,3 +36,8 @@ wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Pet
 wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Beauty_5.json.gz
 wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Cell_Phones_and_Accessories_5.json.gz
 wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Sports_and_Outdoors_5.json.gz
+
+echo Unzipping the datasets...
+gzip -d reviews_Musical_Instruments_5.json.gz
+mv reviews_Musical_Instruments_5.json.gz Musical_Instruments_5.json.gz
+
