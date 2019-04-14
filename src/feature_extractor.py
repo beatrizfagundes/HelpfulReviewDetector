@@ -12,7 +12,9 @@ from csv_converter import save_csv, read_csv
 import os
 import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from joblib import Parallel, delayed
+#from joblib import Parallel, delayed
+from sklearn.externals.joblib import Parallel, delayed
+import itertools
 
 
 def sentiment_features(review_sents):
@@ -115,8 +117,8 @@ def extract_features(corpus):
     reviews_preprocessed = []
 #    features_names = ['Evidences%', 'Claims%', 'ClaimEvidence%', 'NonArgs%', 'PosSents%', 'NegSents%', 'NeutralSents%', 'EmotionBalance', 'NewsDegreeIDF']
     features_names = []
-    unigrams = set()
-    tokens_per_review = []
+#    unigrams = set()
+#    tokens_per_review = []
     reviews = []
     N = len(corpus)
 #    count = 0
@@ -134,7 +136,12 @@ def extract_features(corpus):
 #        logging.info('Extracting sentiment features...')
 #        num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance = sentiment_features(sentences)
 #        review_features = [num_evidences, num_claims, num_claim_evidence, num_non_args, num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance]
-    Parallel(n_jobs=-1)(delayed(extract_tokens)(review_info, unigrams, tokens_per_review) for review_info in corpus)
+    tokens_per_review = Parallel(n_jobs=-1)(delayed(extract_tokens)(review_info) for review_info in corpus)
+    unigrams = set(list( itertools.chain.from_iterable(tokens_per_review) ))
+    print('tokens per review')
+    print(str(len(tokens_per_review)))
+    print('unigrams size')
+    print(str(len(unigrams)))
     # compute IDF = log(number of documents / document frequency)
     logging.info('Extracting average IDF feature...')
     unigram_idf = {}
@@ -172,8 +179,7 @@ def extract_features(corpus):
 def extract_tokens(review_info, unigrams, tokens_per_review):
     review = review_info['reviewText']
     tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
-    unigrams.update(tokens)
-    tokens_per_review.append(tokens)
+    return tokens
 
 def tfidf(idx, review, features, review_tokens, idf):
     instance_to_save = {
