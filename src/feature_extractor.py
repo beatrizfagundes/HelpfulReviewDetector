@@ -119,20 +119,22 @@ def extract_features(corpus):
     tokens_per_review = []
     reviews = []
     N = len(corpus)
-    count = 0
-    for review_info in corpus:
-        count += 1
-        print(str(count))
-        review = review_info['reviewText']
-        logging.info('Extracting linguistic features...')
-        tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
-        unigrams.update(tokens)
-        tokens_per_review.append(tokens)
+#    count = 0
+#    for review_info in corpus:
+#        count += 1
+#        print(str(count))
+#        review = review_info['reviewText']
+#        if count == 1:
+#            logging.info('Extracting linguistic features...')
+#        tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
+#        unigrams.update(tokens)
+#        tokens_per_review.append(tokens)
 #        logging.info('Extracting argumentative features...')
 #        num_evidences, num_claims, num_claim_evidence, num_non_args = argument_features(review)
 #        logging.info('Extracting sentiment features...')
 #        num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance = sentiment_features(sentences)
 #        review_features = [num_evidences, num_claims, num_claim_evidence, num_non_args, num_pos_sents, num_neg_sents, num_neutral_sents, emotional_balance]
+    Parallel(n_jobs=-1)(delayed(extract_tokens)(review_info, unigrams, tokens_per_review) for review_info in corpus)
     # compute IDF = log(number of documents / document frequency)
     logging.info('Extracting average IDF feature...')
     unigram_idf = {}
@@ -143,7 +145,7 @@ def extract_features(corpus):
             unigram_idf[u] = math.log(float(N)/float(vocab_df[u]))
 
     features_names = list(unigrams)
-    reviews = Parallel(n_jobs=2)(delayed(tfidf)(i, corpus[i], features_names, tokens_per_review[i], unigram_idf) for i in range(N))
+    reviews = Parallel(n_jobs=-1)(delayed(tfidf)(i, corpus[i], features_names, tokens_per_review[i], unigram_idf) for i in range(N))
 #    # add avarage idf for a review as a feature
 #    for idx in range(N):
 #        total_idf = 0
@@ -166,6 +168,12 @@ def extract_features(corpus):
     logging.info('Number of features extracted: %s' % str(len(features_names)))
     return reviews
 
+
+def extract_tokens(review_info, unigrams, tokens_per_review):
+    review = review_info['reviewText']
+    tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
+    unigrams.update(tokens)
+    tokens_per_review.append(tokens)
 
 def tfidf(idx, review, features, review_tokens, idf):
     instance_to_save = {
