@@ -2,19 +2,24 @@
 
 echo Started
 
-echo Digital Music
-gzip -d ../datasets/reviews_Digital_Music_5.json.gz
-mv ../datasets/reviews_Digital_Music_5.json ../datasets/Digital_Music_5.json
-echo CSV converter
-python3 csv_converter.py json ../datasets/Digital_Music_5.json
-echo Labelize dataset
-python3 labelize_dataset.py ../datasets/Digital_Music_5.csv
-rm ../datasets/Digital_Music_5.json
-rm ../datasets/Digital_Music_5.csv
+echo Musical Instruments
 echo Feature extractor
-python3 feature_extractor.py ../datasets/Digital_Music_5_label.csv
-gzip ../datasets/Digital_Music_5_tfidf.csv
+python3 feature_extractor.py ../datasets/Musical_Instruments_5_label.csv
+gzip ../datasets/Musical_Instruments_5_tfidf.csv
 
+#echo Digital Music
+#gzip -d ../datasets/reviews_Digital_Music_5.json.gz
+#mv ../datasets/reviews_Digital_Music_5.json ../datasets/Digital_Music_5.json
+#echo CSV converter
+#python3 csv_converter.py json ../datasets/Digital_Music_5.json
+#echo Labelize dataset
+#python3 labelize_dataset.py ../datasets/Digital_Music_5.csv
+#rm ../datasets/Digital_Music_5.json
+#rm ../datasets/Digital_Music_5.csv
+#echo Feature extractor
+#python3 feature_extractor.py ../datasets/Digital_Music_5_label.csv
+#gzip ../datasets/Digital_Music_5_tfidf.csv
+#
 #echo Pets Supplies
 #gzip -d ../datasets/reviews_Pet_Supplies_5.json.gz
 #mv ../datasets/reviews_Pet_Supplies_5.json ../datasets/Pet_Supplies_5.json
@@ -44,31 +49,31 @@ gzip ../datasets/Digital_Music_5_tfidf.csv
 #python3 labelize_dataset.py ../datasets/Cell_Phones_and_Accessories_5.csv
 #echo Feature extractor
 #python3 feature_extractor.py ../datasets/Cell_Phones_and_Accessories_5_label.csv
-
-echo Sports and Outdoors
-gzip -d ../datasets/reviews_Sports_and_Outdoors_5.json.gz
-mv ../datasets/reviews_Sports_and_Outdoors_5.json ../datasets/Sports_and_Outdoors_5.json
-echo CSV converter
-python3 csv_converter.py json ../datasets/Sports_and_Outdoors_5.json
-echo Labelize dataset
-python3 labelize_dataset.py ../datasets/Sports_and_Outdoors_5.csv
-rm ../datasets/Sports_and_Outdoors_5.json
-rm ../datasets/Sports_and_Outdoors_5.csv
-echo Feature extractor
-python3 feature_extractor.py ../datasets/Sports_and_Outdoors_5_label.csv
-gzip ../datasets/Sports_and_Outdoors_5_tfidf.csv
-
-echo Video games
-gzip -d ../datasets/reviews_Video_Games_5.json.gz
-mv ../datasets/reviews_Video_Games_5.json ../datasets/Video_Games_5.json
-echo CSV converter
-python3 csv_converter.py json ../datasets/Video_Games_5.json
-echo Labelize dataset
-python3 labelize_dataset.py ../datasets/Video_Games_5.csv
-rm ../datasets/Video_Games_5.json
-rm ../datasets/Video_Games_5.csv
-echo Feature extractor
-python3 feature_extractor.py ../datasets/Video_Games_5_label.csv
-gzip ../datasets/Video_Games_5_tfidf.csv
-
+#
+#echo Sports and Outdoors
+#gzip -d ../datasets/reviews_Sports_and_Outdoors_5.json.gz
+#mv ../datasets/reviews_Sports_and_Outdoors_5.json ../datasets/Sports_and_Outdoors_5.json
+#echo CSV converter
+#python3 csv_converter.py json ../datasets/Sports_and_Outdoors_5.json
+#echo Labelize dataset
+#python3 labelize_dataset.py ../datasets/Sports_and_Outdoors_5.csv
+#rm ../datasets/Sports_and_Outdoors_5.json
+#rm ../datasets/Sports_and_Outdoors_5.csv
+#echo Feature extractor
+#python3 feature_extractor.py ../datasets/Sports_and_Outdoors_5_label.csv
+#gzip ../datasets/Sports_and_Outdoors_5_tfidf.csv
+#
+#echo Video games
+#gzip -d ../datasets/reviews_Video_Games_5.json.gz
+#mv ../datasets/reviews_Video_Games_5.json ../datasets/Video_Games_5.json
+#echo CSV converter
+#python3 csv_converter.py json ../datasets/Video_Games_5.json
+#echo Labelize dataset
+#python3 labelize_dataset.py ../datasets/Video_Games_5.csv
+#rm ../datasets/Video_Games_5.json
+#rm ../datasets/Video_Games_5.csv
+#echo Feature extractor
+#python3 feature_extractor.py ../datasets/Video_Games_5_label.csv
+#gzip ../datasets/Video_Games_5_tfidf.csv
+#
 echo Finished
