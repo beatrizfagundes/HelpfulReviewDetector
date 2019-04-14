@@ -15,6 +15,7 @@ echo Installing Python libs...
 
 pip3 install -U spacy
 python3 -m spacy download en
+python3 -m spacy download en_core_web_sm
 pip3 install nltk
 python3 -m nltk download vader_lexicon
 pip3 install sklearn
