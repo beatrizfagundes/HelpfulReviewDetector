@@ -96,12 +96,6 @@ def tokenize(review):
         sentences.append(str(sent))
     for token in preprocessed_review:
         token_text = token.text.lower()
-        # compute the document frequency of each token
-        if not token_text in tokens:
-            if token_text in vocab_df:
-                vocab_df[token_text] += 1
-            else:
-                vocab_df[token_text] = 1
         tokens.append(token_text)
         lemmas.append(token.lemma_)
         pos_tags.append(token.pos_)
@@ -145,11 +139,14 @@ def extract_features(corpus):
     # compute IDF = log(number of documents / document frequency)
     logging.info('Extracting average IDF feature...')
     unigram_idf = {}
+    vocab_df = {}
     for u in unigrams:
-        if vocab_df[u] == 0:
-            unigram_idf[u] = 0
-        else:
-            unigram_idf[u] = math.log(float(N)/float(vocab_df[u]))
+        vocab_df[u] = 0
+        for r in tokens_per_review:
+            if u in r:
+                vocab_df[u] += 1
+    for u in vocab_df:
+        unigram_idf[u] = math.log(float(N)/float(vocab_df[u]))
 
     features_names = list(unigrams)
     reviews = Parallel(n_jobs=-1)(delayed(tfidf)(i, corpus[i], features_names, tokens_per_review[i], unigram_idf) for i in range(N))
@@ -216,5 +213,4 @@ usage:')
     save_csv(preprocessed, dataset.replace('label', 'tfidf'))
 
 
-vocab_df = {}
 main()
