@@ -176,7 +176,7 @@ def extract_features(corpus):
     return reviews
 
 
-def extract_tokens(review_info, unigrams, tokens_per_review):
+def extract_tokens(review_info):
     review = review_info['reviewText']
     tokens, lemmas, pos_tags, syntactic_dep, stopwords, sentences = tokenize(review)
     return tokens
