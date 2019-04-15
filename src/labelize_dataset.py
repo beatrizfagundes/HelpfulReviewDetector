@@ -17,17 +17,33 @@ import os
 
 def labelize(corpus):
     labelized_corpus = []
+    review_only = []
+    count = 1
     for review in corpus:
         total = float(review['totalVotes'])
         if total != 0:
+            review['ID'] = count
             helpfulness_ratio = float(review['helpfulVotes']) / total
             if helpfulness_ratio >= 0.7:
                 review['reviewClass'] = 'helpful'
                 labelized_corpus.append(review)
+                review_only.append(review['reviewText'])
+                count += 1
             elif helpfulness_ratio <= 0.3:
                 review['reviewClass'] = 'not_helpful'
                 labelized_corpus.append(review)
-    return labelized_corpus
+                review_only.append(review['reviewText'])
+                count += 1
+    return (labelized_corpus, review_only)
+
+
+def save_txt(reviews, outfile):
+    f = open(outfile, 'w')
+    try:
+        for r in reviews:
+            f.write(r + '\n')
+    finally:
+        f.close()
 
 
 def main():
@@ -45,8 +61,9 @@ usage:')
     logging.info('with dataset: %s' % dataset)
 
     corpus = read_csv(dataset)
-    labelized_corpus = labelize(corpus)
+    labelized_corpus, review_only = labelize(corpus)
     save_csv(labelized_corpus, dataset.replace('.csv', '_label.csv'))
+    save_txt(review_only, dataset.replace('.csv', '.txt'))
 
 
 main()

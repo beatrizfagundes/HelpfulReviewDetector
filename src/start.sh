@@ -5,7 +5,9 @@ echo Installing dependencies...
 sudo apt update
 sudo apt install git
 sudo apt install gcc
+sudo apt install unzip
 sudo apt install megatools
+sudo apt install silversearcher-ag
 sudo apt install python3
 sudo apt install python3-pip
 sudo apt install default-jdk
@@ -40,5 +42,5 @@ wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Spo
 
 echo Unzipping the datasets...
 gzip -d reviews_Musical_Instruments_5.json.gz
-mv reviews_Musical_Instruments_5.json.gz Musical_Instruments_5.json.gz
+mv reviews_Musical_Instruments_5.json Musical_Instruments_5.json
 
