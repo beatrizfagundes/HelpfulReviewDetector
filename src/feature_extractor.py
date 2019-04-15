@@ -15,6 +15,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 #from joblib import Parallel, delayed
 from sklearn.externals.joblib import Parallel, delayed
 import itertools
+import pandas as pd
 
 
 def sentiment_features(review_sents):
@@ -150,6 +151,7 @@ def extract_features(corpus):
 
     features_names = list(unigrams)
     reviews = Parallel(n_jobs=-1)(delayed(tfidf)(i, corpus[i], features_names, tokens_per_review[i], unigram_idf) for i in range(N))
+    df = pd.DataFrame(reviews, columns='reviewClass'+features_names)
 #    # add avarage idf for a review as a feature
 #    for idx in range(N):
 #        total_idf = 0
@@ -170,7 +172,8 @@ def extract_features(corpus):
 #        reviews.append(instance_to_save)
 #    import ipdb; ipdb.set_trace()
     logging.info('Number of features extracted: %s' % str(len(features_names)))
-    return reviews
+#    return reviews
+    return df
 
 
 def extract_tokens(review_info):
@@ -179,12 +182,14 @@ def extract_tokens(review_info):
     return tokens
 
 def tfidf(idx, review, features, review_tokens, idf):
-    instance_to_save = {
-        'reviewClass': review['reviewClass']
-    }
+#    instance_to_save = {
+#        'reviewClass': review['reviewClass']
+#    }
+    instance_to_save = [review['reviewClass']]
     for f in range(len(features)):
         token = features[f]
-        instance_to_save[token] = float(review_tokens.count(token)) / idf[token]
+#        instance_to_save[token] = float(review_tokens.count(token)) / idf[token]
+        instance_to_save.append(float(review_tokens.count(token)) / idf[token])
 
     return instance_to_save
 
@@ -205,12 +210,13 @@ usage:')
 
     corpus = read_csv(dataset)
     previous_dir = os.getcwd()
-    full_margot_path = '../third-party/margot-modified/predictor'
+    full_margot_path = '../lib/margot-modified/predictor'
 #    os.chdir(full_margot_path)
     preprocessed = extract_features(corpus)
     logging.info('Storing the preprocessed dataset at: %s' % previous_dir)
     os.chdir(previous_dir)
-    save_csv(preprocessed, dataset.replace('label', 'tfidf'))
+#    save_csv(preprocessed, dataset.replace('label', 'tfidf'))
+    preprocessed.to_csv("r"+dataset.replace('label', 'tfidf'), header=True, index=None)
 
 
 main()
