@@ -9,7 +9,7 @@ from csv_converter import save_csv, read_csv
 import os
 import random
 from time import time
-import numpy
+import numpy as np
 import pandas as pd
 from sklearn import svm, naive_bayes, tree, neighbors, linear_model, metrics
 from sklearn.model_selection import cross_validate, StratifiedKFold
@@ -38,15 +38,16 @@ from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, r
 
 
 def classify(X, result_file):
-    tlabels = X.reviewClass.values.tolist()
+    tlabels = np.array(X.reviewClass.values.astype(np.float))
     X.drop('reviewClass', axis=1, inplace=True)
+    X = np.array(X.values.astype(np.float))
     f = open(result_file, 'w')
     try:
         clfs = [svm.LinearSVC(), naive_bayes.MultinomialNB(), linear_model.Perceptron(), linear_model.SGDClassifier()]
         for clf in clfs:
             logging.info('Classifying data with %s' % clf)
             t0 = time()
-            cv_results = cross_validate(clf, X.as_matrix(), tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'), n_jobs=-1)
+            cv_results = cross_validate(clf, X, tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'), n_jobs=-1)
 #            skf = StratifiedKFold(n_splits=10)
 #            cv_accuracy = []
 #            cv_precision = []
