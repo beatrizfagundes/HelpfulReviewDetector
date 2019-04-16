@@ -38,7 +38,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, r
 
 
 def classify(X, result_file):
-    tlabels = X.loc[:, ['reviewClass']]
+    tlabels = X.reviewClass.values.tolist()
     X.drop('reviewClass', axis=1, inplace=True)
     f = open(result_file, 'w')
     try:
@@ -46,7 +46,7 @@ def classify(X, result_file):
         for clf in clfs:
             logging.info('Classifying data with %s' % clf)
             t0 = time()
-            cv_results = cross_validate(clf, X, tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'), n_jobs=-1)
+            cv_results = cross_validate(clf, X.as_matrix(), tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'), n_jobs=-1)
 #            skf = StratifiedKFold(n_splits=10)
 #            cv_accuracy = []
 #            cv_precision = []
