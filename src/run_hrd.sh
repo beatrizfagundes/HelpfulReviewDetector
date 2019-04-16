@@ -2,15 +2,26 @@
 
 echo Started
 
-echo Digital Music
-gzip -d ../datasets/reviews_Digital_Music_5.json.gz
-mv ../datasets/reviews_Digital_Music_5.json ../datasets/Digital_Music_5.json
+echo Musical Instruments
 echo CSV converter
-python3 csv_converter.py json ../datasets/Digital_Music_5.json
+python3 csv_converter.py json ../datasets/Musical_Instruments_5.json
 echo Labelize dataset
-python3 labelize_dataset.py ../datasets/Digital_Music_5.csv
-rm ../datasets/Digital_Music_5.json
-rm ../datasets/Digital_Music_5.csv
+python3 labelize_dataset.py ../datasets/Musical_Instruments_5.csv
+rm ../datasets/Musical_Instruments_5.json
+rm ../datasets/Musical_Instruments_5.csv
+echo Feature extractor
+python3 feature_extractor.py ../datasets/Musical_Instruments_5_label.csv
+gzip ../datasets/Musical_Instruments_5_tfidf.csv
+
+echo Digital Music
+#gzip -d ../datasets/reviews_Digital_Music_5.json.gz
+#mv ../datasets/reviews_Digital_Music_5.json ../datasets/Digital_Music_5.json
+#echo CSV converter
+#python3 csv_converter.py json ../datasets/Digital_Music_5.json
+#echo Labelize dataset
+#python3 labelize_dataset.py ../datasets/Digital_Music_5.csv
+#rm ../datasets/Digital_Music_5.json
+#rm ../datasets/Digital_Music_5.csv
 echo Feature extractor
 python3 feature_extractor.py ../datasets/Digital_Music_5_label.csv
 gzip ../datasets/Digital_Music_5_tfidf.csv
