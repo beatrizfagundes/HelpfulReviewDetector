@@ -23,7 +23,10 @@ def tokenize(review):
     preprocessed_review = nlp(review, disable=['parser', 'ner', 'tagger'])
     for token in preprocessed_review:
 #        if not token.is_stop and not token.is_punct and not token.is_digit and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_url and not token.like_num and not token.like_email and not token.is_oov:
-        tokens.append(token.lower_)
+        if token.like_num:
+            print(token.text)
+        if not token.is_stop and not token.like_num:
+            tokens.append(token.lower_)
     return ' '.join(tokens)
 
 
@@ -34,14 +37,18 @@ def extract_features(corpus):
     logging.info('Number of valid documents: %s' % str(corpus.shape[0]))
     corpus['tokens'] = Parallel(n_jobs=-1)(delayed(tokenize)(review) for review in corpus.reviewText)
     print(corpus['tokens'].head())
+    corpus_tokens = corpus.tokens
+    corpus_class = corpus.reviewClass
+    del corpus
     # calculate TFIDF
-    tfidf_vec = TfidfVectorizer(min_df=0, max_df=1)
-    X = tfidf_vec.fit_transform(corpus.tokens)
+    tfidf_vec = TfidfVectorizer(min_df=5, max_df=.6)
+    X = tfidf_vec.fit_transform(corpus_tokens)
     features_names = tfidf_vec.get_feature_names()
     logging.info('Number of features extracted: %s' % str(len(features_names)))
+    print(str(len(features_names)))
     # transform table with tfidf weights to pandas dataframe
     df_tfidf = pd.DataFrame(X.toarray(), columns=features_names)
-    df_tfidf['reviewClass'] = corpus.reviewClass
+    df_tfidf['reviewClass'] = corpus_class
     return df_tfidf
 
 
@@ -61,7 +68,8 @@ usage:')
 
     corpus = pd.read_csv(dataset)
     preprocessed = extract_features(corpus)
-    logging.info('Storing the preprocessed dataset at...')
+    logging.info('Storing the preprocessed dataset...')
+    print('Storing the preprocessed dataset...')
     preprocessed.to_csv(dataset.replace('label', 'tfidf'), header=True, index=None)
 
 
