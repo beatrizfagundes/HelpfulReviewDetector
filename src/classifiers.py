@@ -10,40 +10,43 @@ import os
 import random
 from time import time
 import numpy
+import pandas as pd
 from sklearn import svm, naive_bayes, tree, neighbors, linear_model, metrics
 from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 
 
-def split_class_from_features(corpus):
-    X = []
-    tlabels = []
-    for review in corpus:
-        review_vec = []
-        tlabels.append(review['reviewClass'])
-        for feature in review:
-            if feature != 'reviewClass':
-                review_vec.append(float(review[feature]))
-        X.append(review_vec)
-    # transform the nominal classes to numerical classes
-    tlabels_levels = { 'helpful': 1, 'not_helpful': -1 }
-#    tlabels_levels = list(set(tlabels))
-#    idx_helpful = tlabels.index('helpful')
-#    tlabels = [tlabels_levels.index(l) for l in tlabels]
-    tlabels = [tlabels_levels[l] for l in tlabels]
-    X = numpy.array(X)
-    tlabels = numpy.array(tlabels)
-    return (X, tlabels, tlabels[idx_helpful])
+#def split_class_from_features(corpus):
+#    X = []
+#    tlabels = []
+#    for review in corpus:
+#        review_vec = []
+#        tlabels.append(review['reviewClass'])
+#        for feature in review:
+#            if feature != 'reviewClass':
+#                review_vec.append(float(review[feature]))
+#        X.append(review_vec)
+#    # transform the nominal classes to numerical classes
+#    tlabels_levels = { 'helpful': 1, 'not_helpful': -1 }
+##    tlabels_levels = list(set(tlabels))
+##    idx_helpful = tlabels.index('helpful')
+##    tlabels = [tlabels_levels.index(l) for l in tlabels]
+#    tlabels = [tlabels_levels[l] for l in tlabels]
+#    X = numpy.array(X)
+#    tlabels = numpy.array(tlabels)
+#    return (X, tlabels, tlabels[idx_helpful])
 
 
-def classify(X, tlabels, result_file):
+def classify(X, result_file):
+    tlabels = X.loc[:, ['reviewClass']]
+    X.drop('reviewClass', axis=1, inplace=True)
     f = open(result_file, 'w')
     try:
         clfs = [svm.LinearSVC(), naive_bayes.MultinomialNB(), linear_model.Perceptron(), linear_model.SGDClassifier()]
         for clf in clfs:
             logging.info('Classifying data with %s' % clf)
             t0 = time()
-            cv_results = cross_validate(clf, X, tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'))
+            cv_results = cross_validate(clf, X, tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'), n_jobs=-1)
 #            skf = StratifiedKFold(n_splits=10)
 #            cv_accuracy = []
 #            cv_precision = []
@@ -93,9 +96,10 @@ usage:')
     dataset = sys.argv[1]
     logging.info('with dataset: %s' % dataset)
 
-    corpus = read_csv(dataset)
-    X, tlabels, helpful_class = split_class_from_features(corpus)
-    classify(X, tlabels, dataset.replace('_features_all.csv', '_results.txt'))
+    corpus = pd.read_csv(dataset)
+    corpus.reviewClass = corpus.reviewClass.map({'helpful': 1, 'not_helpful': -1})
+#    X, tlabels, helpful_class = split_class_from_features(corpus)
+    classify(corpus, dataset.replace('_tfidf.csv', '_results.txt'))
 
 
 main()
