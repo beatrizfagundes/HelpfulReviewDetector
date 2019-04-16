@@ -116,7 +116,7 @@ def extract_features(corpus):
 #    tokens_per_review = []
     reviews = []
     N = len(corpus)
-#    count = 0
+    count = 0
 #    for review_info in corpus:
 #        count += 1
 #        print(str(count))
@@ -142,6 +142,8 @@ def extract_features(corpus):
     unigram_idf = {}
     vocab_df = {}
     for u in unigrams:
+        count += 1
+        print(count)
         vocab_df[u] = 0
         for r in tokens_per_review:
             if u in r:
@@ -151,7 +153,7 @@ def extract_features(corpus):
 
     features_names = list(unigrams)
     reviews = Parallel(n_jobs=-1)(delayed(tfidf)(i, corpus[i], features_names, tokens_per_review[i], unigram_idf) for i in range(N))
-    df = pd.DataFrame(reviews, columns='reviewClass'+features_names)
+    df = pd.DataFrame(reviews, columns=['reviewClass']+features_names)
 #    # add avarage idf for a review as a feature
 #    for idx in range(N):
 #        total_idf = 0
