@@ -28,9 +28,10 @@ def tokenize(review):
 
 
 def extract_features(corpus):
-#    N = corpus.shape[0]
     # tokenize reviews
     corpus = corpus.dropna()
+    print(str(corpus.shape[0]))
+    logging.info('Number of valid documents: %s' % str(corpus.shape[0]))
     corpus['tokens'] = Parallel(n_jobs=-1)(delayed(tokenize)(review) for review in corpus.reviewText)
     print(corpus['tokens'].head())
     # calculate TFIDF
