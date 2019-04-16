@@ -98,7 +98,7 @@ usage:')
     logging.info('with dataset: %s' % dataset)
 
     corpus = pd.read_csv(dataset)
-    corpus.reviewClass = corpus.reviewClass.map({'helpful': 1, 'not_helpful': -1})
+    corpus.reviewClass = corpus.reviewClass.map({'helpful': 1, 'not_helpful': 0})
 #    X, tlabels, helpful_class = split_class_from_features(corpus)
     classify(corpus, dataset.replace('_tfidf.csv', '_results.txt'))
 
