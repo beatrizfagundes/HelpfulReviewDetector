@@ -22,8 +22,8 @@ def tokenize(review):
     nlp = spacy.load("en_core_web_sm")
     preprocessed_review = nlp(review, disable=['parser', 'ner', 'tagger'])
     for token in preprocessed_review:
-        if not token.is_stop and not token.is_punct and not token.is_digit and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_url and not token.like_num and not token.like_email and not token.is_oov:
-            tokens.append(token.lower_)
+#        if not token.is_stop and not token.is_punct and not token.is_digit and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_url and not token.like_num and not token.like_email and not token.is_oov:
+        tokens.append(token.lower_)
     return ' '.join(tokens)
 
 
