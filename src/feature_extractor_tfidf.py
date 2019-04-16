@@ -22,7 +22,8 @@ def tokenize(review):
     nlp = spacy.load("en_core_web_sm")
     preprocessed_review = nlp(review, disable=['parser', 'ner', 'tagger'])
     for token in preprocessed_review:
-        if not token.is_stop and not token.is_punct and not token.is_digit and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_url and not token.like_num and not token.like_email and not token.is_oov:
+#        if not token.is_stop and not token.is_punct and not token.is_digit and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_url and not token.like_num and not token.like_email and not token.is_oov:
+        if not token.is_stop and not token.is_punct and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_num:
             tokens.append(token.lower_)
     return ' '.join(tokens)
 
@@ -31,6 +32,7 @@ def extract_features(corpus):
 #    N = corpus.shape[0]
     # tokenize reviews
     corpus['tokens'] = Parallel(n_jobs=-1)(delayed(tokenize)(review) for review in corpus.reviewText)
+    print(corpus['tokens'].head())
     # calculate TFIDF
     tfidf_vec = TfidfVectorizer(min_df=0, max_df=1)
     X = tfidf_vec.fit_transform(corpus.tokens)
@@ -59,7 +61,7 @@ usage:')
     corpus = pd.read_csv(dataset)
     preprocessed = extract_features(corpus)
     logging.info('Storing the preprocessed dataset at...')
-    preprocessed.to_csv("r'"+dataset.replace('label', 'tfidf'), header=True, index=None)
+    preprocessed.to_csv(dataset.replace('label', 'tfidf'), header=True, index=None)
 
 
 main()
