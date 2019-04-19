@@ -11,39 +11,35 @@
 import sys
 import csv
 import logging
-from csv_converter import save_csv, read_csv
+import pandas as pd
 import os
+import numpy as np
+from joblib import Parallel, delayed
 
 
 def labelize(corpus):
-    labelized_corpus = []
-    review_only = []
-    count = 1
-    for review in corpus:
-        total = float(review['totalVotes'])
-        if total != 0:
-            review['ID'] = count
-            helpfulness_ratio = float(review['helpfulVotes']) / total
-            if helpfulness_ratio >= 0.7:
-                review['reviewClass'] = 'helpful'
-                labelized_corpus.append(review)
-                review_only.append(review['reviewText'])
-                count += 1
-            elif helpfulness_ratio <= 0.3:
-                review['reviewClass'] = 'not_helpful'
-                labelized_corpus.append(review)
-                review_only.append(review['reviewText'])
-                count += 1
-    return (labelized_corpus, review_only)
+    print(str(corpus.shape[0]))
+    logging.info('Number of original documents: %s' % str(corpus.shape[0]))
+    corpus['reviewClass'] = Parallel(n_jobs=-1)(delayed(assign_categories)(row.helpfulVotes, row.totalVotes) for index, row in corpus.iterrows())
+    corpus = corpus.dropna()
+    corpus.reviewClass = corpus.reviewClass.astype(int)
+    print(str(corpus.shape[0]))
+    logging.info('Number of labelized documents: %s' % str(corpus.shape[0]))
+
+    return (corpus, corpus.reviewText)
 
 
-def save_txt(reviews, outfile):
-    f = open(outfile, 'w')
-    try:
-        for r in reviews:
-            f.write(r + '\n')
-    finally:
-        f.close()
+def assign_categories(helpful_votes, total_votes):
+    if total_votes == 0:
+        return np.nan
+    else:
+        helpfulness_ratio = float(helpful_votes)/float(total_votes)
+        if helpfulness_ratio >= 0.7:
+            return 1 # return 'helpful'
+        elif helpfulness_ratio <= 0.3:
+            return -1 # return 'not_helpful'
+        else:
+            return np.nan
 
 
 def main():
@@ -60,10 +56,10 @@ usage:')
     dataset = sys.argv[1]
     logging.info('with dataset: %s' % dataset)
 
-    corpus = read_csv(dataset)
+    corpus = pd.read_csv(dataset)
     labelized_corpus, review_only = labelize(corpus)
-    save_csv(labelized_corpus, dataset.replace('.csv', '_label.csv'))
-    save_txt(review_only, dataset.replace('.csv', '.txt'))
+    labelized_corpus.to_csv(dataset.replace('.csv', '_label.csv'), header=True, index=None)
+    review_only.to_csv(dataset.replace('.csv', '.txt'), header=True, index=None)
 
 
 main()
