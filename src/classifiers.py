@@ -15,18 +15,19 @@ from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 
 
-def classify(X, result_file):
+def classify(dataset_path, result_file):
+    X = pd.read_csv(dataset_path)
     tlabels = np.array(X.reviewClass.values.astype('int32'))
     X.drop('reviewClass', axis=1, inplace=True)
     X = np.array(X.values.astype('float32'))
     f = open(result_file, 'w')
     try:
-        clfs = [svm.LinearSVC(), naive_bayes.MultinomialNB(), linear_model.Perceptron(), linear_model.SGDClassifier()]
+#        clfs = [svm.LinearSVC(), naive_bayes.MultinomialNB(), linear_model.Perceptron(), linear_model.SGDClassifier()]
+        clfs = [svm.LinearSVC()]
         for clf in clfs:
             logging.info('Classifying data with %s' % clf)
             print(clf)
             t0 = time()
-            print(t0)
             cv_results = cross_validate(clf, X, tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'), n_jobs=-1)
             # import ipdb; ipdb.set_trace()
             logging.info('done in %0.3fs' % (time() - t0))
@@ -42,7 +43,6 @@ def classify(X, result_file):
             f.write('F1: %0.4f (+/- %0.2f)\n' % (cv_f1.mean(), cv_f1.std() * 2))
             f.write('ROC AUC: %0.4f (+/- %0.2f)\n' % (cv_auc.mean(), cv_auc.std() * 2))
             logging.info('done in %0.3fs' % (time() - t0))
-            print(time() - t0)
     finally:
         f.close()
 
@@ -63,10 +63,9 @@ usage:')
     dataset = sys.argv[1]
     logging.info('with dataset: %s' % dataset)
 
-    corpus = pd.read_csv(dataset)
-    corpus.reviewClass = corpus.reviewClass.map({'helpful': 1, 'not_helpful': 0})
+#    corpus.reviewClass = corpus.reviewClass.map({'helpful': 1, 'not_helpful': 0})
 #    X, tlabels, helpful_class = split_class_from_features(corpus)
-    classify(corpus, dataset.replace('_tfidf.csv', '_results.txt'))
+    classify(dataset, dataset.replace('_tfidf.csv', '_results.txt'))
 
 
 main()
