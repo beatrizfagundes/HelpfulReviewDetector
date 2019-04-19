@@ -36,7 +36,6 @@ def classify(dataset_path, result_file):
             cv_recall = cv_results['test_recall']
             cv_f1 = cv_results['test_f1']
             cv_auc = cv_results['test_roc_auc']
-            f.write(clf)
             f.write('Accuracy: %0.4f (+/- %0.2f)\n' % (cv_accuracy.mean(), cv_accuracy.std() * 2))
             f.write('Precision: %0.4f (+/- %0.2f)\n' % (cv_precision.mean(), cv_precision.std() * 2))
             f.write('Recall: %0.4f (+/- %0.2f)\n' % (cv_recall.mean(), cv_recall.std() * 2))

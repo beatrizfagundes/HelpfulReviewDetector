@@ -69,20 +69,20 @@ echo Started
 #python3 labelize_dataset.py ../datasets/Sports_and_Outdoors_5.csv
 #rm ../datasets/Sports_and_Outdoors_5.json
 #rm ../datasets/Sports_and_Outdoors_5.csv
-#
-#echo Feature extractor
-#echo Musical Instruments
-#python3 feature_extractor_tfidf.py ../datasets/Musical_Instruments_5_label.csv
-#gzip ../datasets/Musical_Instruments_5_tfidf.csv
-#echo Digital Music
-#python3 feature_extractor_tfidf.py ../datasets/Digital_Music_5_label.csv
-#gzip ../datasets/Digital_Music_5_tfidf.csv
-#echo Pets Supplies
-#python3 feature_extractor_tfidf.py ../datasets/Pet_Supplies_5_label.csv
-#gzip ../datasets/Pet_Supplies_5_tfidf.csv
-#echo Beauty
-#python3 feature_extractor_tfidf.py ../datasets/Beauty_5_label.csv
-#gzip ../datasets/Beauty_5_tfidf.csv
+
+echo Feature extractor
+echo Musical Instruments
+python3 feature_extractor_tfidf.py ../datasets/Musical_Instruments_5_label.csv
+gzip ../datasets/Musical_Instruments_5_tfidf.csv
+echo Digital Music
+python3 feature_extractor_tfidf.py ../datasets/Digital_Music_5_label.csv
+gzip ../datasets/Digital_Music_5_tfidf.csv
+echo Pets Supplies
+python3 feature_extractor_tfidf.py ../datasets/Pet_Supplies_5_label.csv
+gzip ../datasets/Pet_Supplies_5_tfidf.csv
+echo Beauty
+python3 feature_extractor_tfidf.py ../datasets/Beauty_5_label.csv
+gzip ../datasets/Beauty_5_tfidf.csv
 echo Video games
 python3 feature_extractor_tfidf.py ../datasets/Video_Games_5_label.csv
 gzip ../datasets/Video_Games_5_tfidf.csv

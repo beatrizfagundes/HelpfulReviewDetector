@@ -23,9 +23,9 @@ def tokenize(review):
     preprocessed_review = nlp(review, disable=['parser', 'ner', 'tagger'])
     for token in preprocessed_review:
 #        if not token.is_stop and not token.is_punct and not token.is_digit and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_url and not token.like_num and not token.like_email and not token.is_oov:
-        if token.like_num:
+        if token.is_oov:
             print(token.text)
-        if not token.is_stop and not token.like_num:
+        if not token.is_stop and not token.is_punct and not token.is_bracket and not token.like_num:
             tokens.append(token.lower_)
     return ' '.join(tokens)
 
@@ -41,7 +41,7 @@ def extract_features(corpus):
     corpus_class = corpus.reviewClass
     del corpus
     # calculate TFIDF
-    tfidf_vec = TfidfVectorizer(min_df=5, max_df=.6)
+    tfidf_vec = TfidfVectorizer(min_df=.2, max_df=.6)
     X = tfidf_vec.fit_transform(corpus_tokens)
     features_names = tfidf_vec.get_feature_names()
     logging.info('Number of features extracted: %s' % str(len(features_names)))
