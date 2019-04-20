@@ -52,7 +52,7 @@ megadl 'https://mega.nz/#!N7gVWQzQ!hwm5HUJhBLO4ovpx0A3z45DbcDKnfQM5IYJERplHTgw'
 # Sports label
 megadl 'https://mega.nz/#!RihRhSqK!WTavqsJuGGmRMIPlumWtyjIpqAVqvPYYkHXLYKl4bHs'
 # Video games label
-#megadl ''
+megadl 'https://mega.nz/#!xrpF0AxL!d0GpxodcKtyeSsio4asAGxt1i-sKyi-XOgSKZ1M69m4'
 
 echo Unzipping the datasets...
 #gzip -d reviews_Musical_Instruments_5.json.gz
