@@ -64,7 +64,6 @@ def extract_features(corpus):
     for f in features_names:
         corpus[f] = 0.0
     count = 0
-    print(corpus.head())
     for index, row in corpus.iterrows():
         count += 1
         print(str(count))
@@ -92,7 +91,7 @@ usage:')
     dataset = sys.argv[1]
     logging.info('with dataset: %s' % dataset)
 
-    corpus = pd.read_csv(dataset, nrows=5)
+    corpus = pd.read_csv(dataset)
     previous_dir = os.getcwd()
     full_margot_path = '../lib/margot-modified/predictor'
     os.chdir(full_margot_path)
