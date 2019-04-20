@@ -32,15 +32,30 @@ cd HelpfulReviewDetector
 
 echo Downloading datasets...
 mkdir datasets && cd datasets
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Video_Games_5.json.gz
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Musical_Instruments_5.json.gz
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Digital_Music_5.json.gz
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Pet_Supplies_5.json.gz
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Beauty_5.json.gz
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Cell_Phones_and_Accessories_5.json.gz
-wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Sports_and_Outdoors_5.json.gz
+#wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Video_Games_5.json.gz
+#wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Musical_Instruments_5.json.gz
+#wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Digital_Music_5.json.gz
+#wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Pet_Supplies_5.json.gz
+#wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Beauty_5.json.gz
+#wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Cell_Phones_and_Accessories_5.json.gz
+#wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/reviews_Sports_and_Outdoors_5.json.gz
+# Beauty label
+megadl 'https://mega.nz/#!NmoXzAaD!0MeoFfJBOsm2nimaq6aIbgagdvfJQYBjhPB9WLY3VSo'
+# Cell phones label
+megadl 'https://mega.nz/#!NrwRmKjT!9SK3QNg-EqyXY0D28EcTwMwZYX3Mk2auJ3daRDyIpLE'
+# Digital Music label
+megadl 'https://mega.nz/#!An5x3KhI!tNOvBZOrvXI7Ow_QUcKMbYmViK3jpqyhKu9sxEtGPa0'
+# Musical Instruments label
+megadl 'https://mega.nz/#!hjgH2I7R!qadsj3740MGaVIc-PqB89t9_1AZJjRnNKoYtaRlz2b8'
+# Pet supplies label
+megadl 'https://mega.nz/#!N7gVWQzQ!hwm5HUJhBLO4ovpx0A3z45DbcDKnfQM5IYJERplHTgw'
+# Sports label
+megadl 'https://mega.nz/#!RihRhSqK!WTavqsJuGGmRMIPlumWtyjIpqAVqvPYYkHXLYKl4bHs'
+# Video games label
+#megadl ''
 
 echo Unzipping the datasets...
-gzip -d reviews_Musical_Instruments_5.json.gz
-mv reviews_Musical_Instruments_5.json Musical_Instruments_5.json
+#gzip -d reviews_Musical_Instruments_5.json.gz
+#mv reviews_Musical_Instruments_5.json Musical_Instruments_5.json
+gunzip *.csv.gz
 

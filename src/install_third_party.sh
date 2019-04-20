@@ -13,6 +13,8 @@ git clone https://github.com/beatrizfagundes/margot-modified.git
 cd margot-modified/predictor
 mkdir bin
 mkdir lib
+# before installing the dependencies, sometimes we need to modify the Makefile from svm_hmm folder
+# and insert LIBS = -lm right below LDFLAGS
 ./install_dependencies.sh
 cp ../../SVM-Light-1.5-to-be-released/svm_classify bin/.
 ./compile.sh
