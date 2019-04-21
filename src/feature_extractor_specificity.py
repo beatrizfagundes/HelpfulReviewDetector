@@ -26,6 +26,7 @@ def specificity_features(review, nlp):
     num_sents = 0
     f = open('sents.txt', 'w')
     try:
+        f.write('test\n')
         for sentence in nlp(review).sents:
             num_sents += 1
             f.write(str(sentence)+'\n')
@@ -37,7 +38,7 @@ def specificity_features(review, nlp):
     # running SPECITELLER
     full_cmd = 'python3 test.py --test_data sents.txt'
     # supress command output
-    full_cmd += ' > /dev/null 2>&1'
+#    full_cmd += ' > /dev/null 2>&1'
     os.system(full_cmd)
     # handles the MARGOT output file
     f = open('predictions.txt', 'r')

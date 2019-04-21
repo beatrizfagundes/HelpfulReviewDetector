@@ -23,6 +23,20 @@ echo $(date -u)
 #python3 test.py --test_data /home/soniassfsl26/HelpfulReviewDetector/datasets/Musical_Instruments_5.txt
 #echo $(date -u)
 
+echo Digital Music
+echo $(date -u)
+echo Sample sentences
+python3 get_sentences_sample.py ../datasets/Digital_Music_5.txt
+echo $(date -u)
+echo Train
+cd ../lib/speciteller/Domain-Agnostic-Sentence-Specificity-Prediction
+python3 train.py --test_data /home/soniassfsl26/HelpfulReviewDetector/datasets/Digital_Music_5_train.txt
+echo $(date -u)
+echo Test
+cd ../../../src
+python3 feature_extractor_specificity.py ../datasets/Digital_Music_5_label.csv
+echo $(date -u)
+
 #echo Digital Music
 ##gzip -d ../datasets/reviews_Digital_Music_5.json.gz
 ##mv ../datasets/reviews_Digital_Music_5.json ../datasets/Digital_Music_5.json
