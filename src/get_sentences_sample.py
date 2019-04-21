@@ -15,6 +15,7 @@ import pandas as pd
 
 
 def split_sentences(review, nlp):
+    review = review.replace('"', '')
     review_sents = []
     for sentence in nlp(review).sents:
         review_sents.append(str(sentence))
