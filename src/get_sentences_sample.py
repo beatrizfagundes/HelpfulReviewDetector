@@ -27,6 +27,11 @@ def extract_sentences(corpus):
     corpus = corpus.dropna()
     print(str(corpus.shape[0]))
     logging.info('Number of valid documents: %s' % str(corpus.shape[0]))
+    # sample documents from corpus
+    corpus = corpus.sample(n=2000)
+    print(str(corpus.shape[0]))
+    logging.info('Number of sampled documents: %s' % str(corpus.shape[0]))
+
     nlp = spacy.load("en_core_web_sm")
     sentences = Parallel(n_jobs=-1)(delayed(split_sentences)(review, nlp) for review in corpus.reviewText)
     print('Finished finding sentences')
