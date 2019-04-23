@@ -10,7 +10,7 @@ import random
 from time import time
 import numpy as np
 import pandas as pd
-from sklearn import svm, naive_bayes, tree, neighbors, linear_model, metrics
+from sklearn import svm, naive_bayes, tree, neighbors, linear_model, ensemble, neural_network, metrics
 from sklearn.model_selection import cross_validate, StratifiedKFold
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 
@@ -22,8 +22,7 @@ def classify(dataset_path, result_file):
     X = np.array(X.values.astype('float32'))
     f = open(result_file, 'w')
     try:
-#        clfs = [svm.LinearSVC(), naive_bayes.MultinomialNB(), linear_model.Perceptron(), linear_model.SGDClassifier()]
-        clfs = [svm.LinearSVC()]
+        clfs = [svm.LinearSVC(), svm.SVC(), naive_bayes.MultinomialNB(), naive_bayes.GaussianNB(), neural_network.MLPClassifier(), linear_model.Perceptron(), linear_model.SGDClassifier(), tree.DecisionTreeClassifier(), ensemble.RandomForestClassifier()]
         for clf in clfs:
             logging.info('Classifying data with %s' % clf)
             print(clf)
@@ -37,10 +36,15 @@ def classify(dataset_path, result_file):
             cv_f1 = cv_results['test_f1']
             cv_auc = cv_results['test_roc_auc']
             f.write('Accuracy: %0.4f (+/- %0.2f)\n' % (cv_accuracy.mean(), cv_accuracy.std() * 2))
+            logging.info(cv_accuracy.tolist())
             f.write('Precision: %0.4f (+/- %0.2f)\n' % (cv_precision.mean(), cv_precision.std() * 2))
+            logging.info(cv_precision.tolist())
             f.write('Recall: %0.4f (+/- %0.2f)\n' % (cv_recall.mean(), cv_recall.std() * 2))
+            logging.info(cv_recall.tolist())
             f.write('F1: %0.4f (+/- %0.2f)\n' % (cv_f1.mean(), cv_f1.std() * 2))
+            logging.info(cv_f1.tolist())
             f.write('ROC AUC: %0.4f (+/- %0.2f)\n' % (cv_auc.mean(), cv_auc.std() * 2))
+            logging.info(cv_auc.tolist())
             logging.info('done in %0.3fs' % (time() - t0))
     finally:
         f.close()
@@ -64,7 +68,7 @@ usage:')
 
 #    corpus.reviewClass = corpus.reviewClass.map({'helpful': 1, 'not_helpful': 0})
 #    X, tlabels, helpful_class = split_class_from_features(corpus)
-    classify(dataset, dataset.replace('_tfidf.csv', '_results.txt'))
+    classify(dataset, dataset.replace('.csv', '_results.txt'))
 
 
 main()
