@@ -23,8 +23,9 @@ def tokenize(review):
     preprocessed_review = nlp(review, disable=['parser', 'ner', 'tagger'])
     for token in preprocessed_review:
 #        if not token.is_stop and not token.is_punct and not token.is_digit and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_url and not token.like_num and not token.like_email:
-        if not token.is_stop and not token.is_punct and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_num:
-            tokens.append(token.lower_)
+#        if not token.is_stop and not token.is_punct and not token.is_space and not token.is_bracket and not token.is_quote and not token.like_num:
+#            tokens.append(token.lower_)
+        tokens.append(token.lemma_)
     return ' '.join(tokens)
 
 
@@ -38,7 +39,8 @@ def extract_features(corpus):
     corpus_class = corpus.reviewClass
     del corpus
     # calculate TFIDF
-    tfidf_vec = TfidfVectorizer(min_df=.01, max_df=.6)
+#    tfidf_vec = TfidfVectorizer(min_df=5)
+    tfidf_vec = TfidfVectorizer()
     X = tfidf_vec.fit_transform(corpus_tokens)
     features_names = tfidf_vec.get_feature_names()
     logging.info('Number of features extracted: %s' % str(len(features_names)))
@@ -58,7 +60,7 @@ def main():
     if len(sys.argv) != 2:
         logging.info('ERROR! Wrong number of params, you must follow the \
 usage:')
-        logging.info("python feature_extractor.py [csv file]")
+        logging.info("python feature_extractor_tfidf.py [csv file]")
         return
     dataset = sys.argv[1]
     logging.info('with dataset: %s' % dataset)
