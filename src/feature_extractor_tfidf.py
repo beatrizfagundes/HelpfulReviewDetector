@@ -10,8 +10,8 @@ import json
 import math
 import os
 import spacy
-#from joblib import Parallel, delayed
-from sklearn.externals.joblib import Parallel, delayed
+from joblib import Parallel, delayed
+#from sklearn.externals.joblib import Parallel, delayed
 import itertools
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
