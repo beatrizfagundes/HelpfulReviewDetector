@@ -20,6 +20,7 @@ def classify(dataset_path, result_file):
     tlabels = np.array(X.reviewClass.values.astype('int32'))
     X.drop('reviewClass', axis=1, inplace=True)
     X = np.array(X.values.astype('float32'))
+    X = X.to_sparse()
     f = open(result_file, 'w')
     try:
 #        clfs = [svm.LinearSVC(), svm.SVC(), naive_bayes.MultinomialNB(), naive_bayes.GaussianNB(), neural_network.MLPClassifier(), linear_model.Perceptron(), linear_model.SGDClassifier(), tree.DecisionTreeClassifier(), ensemble.RandomForestClassifier()]
@@ -28,7 +29,7 @@ def classify(dataset_path, result_file):
             logging.info('Classifying data with %s' % clf)
             print(clf)
             t0 = time()
-            cv_results = cross_validate(clf, X, tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc', 'brier_score_loss'), n_jobs=-1)
+            cv_results = cross_validate(clf, X, tlabels, cv=10, scoring=('accuracy', 'f1', 'precision', 'recall', 'roc_auc'), n_jobs=-1)
             # import ipdb; ipdb.set_trace()
             logging.info('done in %0.3fs' % (time() - t0))
             cv_accuracy = cv_results['test_accuracy']
@@ -36,7 +37,7 @@ def classify(dataset_path, result_file):
             cv_recall = cv_results['test_recall']
             cv_f1 = cv_results['test_f1']
             cv_auc = cv_results['test_roc_auc']
-            cv_brier = cv_results['test_brier_score_loss']
+#            cv_brier = cv_results['test_brier_score_loss']
             f.write('Accuracy: %0.4f (+/- %0.2f)\n' % (cv_accuracy.mean(), cv_accuracy.std() * 2))
             logging.info(cv_accuracy.tolist())
             f.write('Precision: %0.4f (+/- %0.2f)\n' % (cv_precision.mean(), cv_precision.std() * 2))
@@ -47,8 +48,8 @@ def classify(dataset_path, result_file):
             logging.info(cv_f1.tolist())
             f.write('ROC AUC: %0.4f (+/- %0.2f)\n' % (cv_auc.mean(), cv_auc.std() * 2))
             logging.info(cv_auc.tolist())
-            f.write('Brier Score Loss: %0.4f (+/- %0.2f)\n' % (cv_brier.mean(), cv_brier.std() * 2))
-            logging.info(cv_brier.tolist())
+#            f.write('Brier Score Loss: %0.4f (+/- %0.2f)\n' % (cv_brier.mean(), cv_brier.std() * 2))
+#            logging.info(cv_brier.tolist())
             logging.info('done in %0.3fs' % (time() - t0))
     finally:
         f.close()
