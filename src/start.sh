@@ -5,6 +5,7 @@ echo Installing dependencies...
 sudo apt update
 sudo apt install git
 sudo apt install gcc
+sudo apt install zip
 sudo apt install unzip
 sudo apt install megatools
 sudo apt install silversearcher-ag
