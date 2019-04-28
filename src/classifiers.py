@@ -19,7 +19,7 @@ def classify(dataset_path, result_file):
     X = pd.read_csv(dataset_path)
     tlabels = np.array(X.reviewClass.values.astype('int32'))
     X.drop('reviewClass', axis=1, inplace=True)
-    X = np.array(X.values.astype('float32'))
+#    X = np.array(X.values.astype('float32'))
     X = X.to_sparse()
     f = open(result_file, 'w')
     try:
