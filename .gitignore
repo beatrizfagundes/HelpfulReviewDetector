@@ -1,7 +1,14 @@
 # Ignore tempfiles
 .DS_Store
+__pycache__
 
 # Ignore third-party tools
-third-party
+lib
 lexicon
 datasets
+
+# Ignore log files
+*.log
+
+# Ignore folder with results
+results
