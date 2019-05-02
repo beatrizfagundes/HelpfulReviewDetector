@@ -20,11 +20,14 @@ def classify(dataset_path, result_file):
     tlabels = np.array(X.reviewClass.values.astype('int32'))
     X.drop('reviewClass', axis=1, inplace=True)
 #    X = np.array(X.values.astype('float32'))
-    X = X.to_sparse()
+    X = X.astype(np.float32)
+    X = X.to_sparse(fill_value=0)
+    logging.info('Density: %s' % str(X.density))
+    print(X.density)
     f = open(result_file, 'w')
     try:
 #        clfs = [svm.LinearSVC(), svm.SVC(), naive_bayes.MultinomialNB(), naive_bayes.GaussianNB(), neural_network.MLPClassifier(), linear_model.Perceptron(), linear_model.SGDClassifier(), tree.DecisionTreeClassifier(), ensemble.RandomForestClassifier()]
-        clfs = [svm.LinearSVC(), naive_bayes.MultinomialNB(), naive_bayes.GaussianNB(), neural_network.MLPClassifier(), linear_model.Perceptron(), linear_model.SGDClassifier(), tree.DecisionTreeClassifier(), ensemble.RandomForestClassifier()]
+        clfs = [svm.LinearSVC(), naive_bayes.MultinomialNB(), naive_bayes.GaussianNB(), neural_network.MLPClassifier(), linear_model.SGDClassifier(), tree.DecisionTreeClassifier(), ensemble.RandomForestClassifier()]
         for clf in clfs:
             logging.info('Classifying data with %s' % clf)
             print(clf)
